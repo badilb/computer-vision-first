@@ -2,9 +2,16 @@ from keras import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.initializers import RandomNormal, GlorotUniform
+from preprocessing import create_data_generators  # Импорт функции для создания генераторов
+import matplotlib.pyplot as plt
 
+# Параметры изображений
+img_width, img_height = 64, 64
+batch_size = 32
+dataset_path = '/Users/batyrkhan/Downloads/archive'  # Укажите путь к вашему набору данных
 
-from preprocessing import train_generator, validation_generator, img_width, img_height
+# Создание генераторов данных
+train_generator, validation_generator = create_data_generators(dataset_path, img_width, img_height, batch_size)
 
 def build_model(activation='relu', initializer='glorot_uniform'):
     model = Sequential()
@@ -35,7 +42,6 @@ def build_model(activation='relu', initializer='glorot_uniform'):
 
     return model
 
-
 # Модель с активацией ReLU и инициализацией Xavier
 relu_model = build_model(activation='relu', initializer=GlorotUniform())
 relu_model.summary()
@@ -43,9 +49,6 @@ relu_model.summary()
 # Модель с активацией Sigmoid и случайной инициализацией весов
 sigmoid_model = build_model(activation='sigmoid', initializer=RandomNormal(stddev=0.01))
 sigmoid_model.summary()
-
-
-import matplotlib.pyplot as plt
 
 # Параметры обучения
 epochs = 10  # Задайте количество эпох
@@ -86,6 +89,5 @@ plot_history(history_relu, 'ReLU Model')
 plot_history(history_sigmoid, 'Sigmoid Model')
 
 # Сохранение обученных моделей
-relu_model.save('relu_model.h5')
-sigmoid_model.save('sigmoid_model.h5')
-
+relu_model.save('relu_model.keras')
+sigmoid_model.save('sigmoid_model.keras')
